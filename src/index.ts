@@ -1,5 +1,4 @@
-import * as fs from 'fs';
-
+import { realFileSystemModule, FilesystemInterface } from './filesystem.interface';
 export const countRepeatedWords = (inputData: string): number => {
   const lines: string[] = inputData.split('\n');
   const words: string[] = lines.flatMap(l=>l.split(" ")).filter(w => w.length > 0);
@@ -14,13 +13,16 @@ export const countRepeatedWords = (inputData: string): number => {
   });
   return repeatedWords.size;
 }
+export const run = (filesystem: FilesystemInterface, inputfilename: string, outputfilename: string) => {
+  const inputData: string = filesystem.readFile(inputfilename);
+  filesystem.writeFile(outputfilename, countRepeatedWords(inputData).toString()); 
+}
 if (require.main === module) {
   if (process.argv.length !== 4) {
-    console.error('Wrong number of args')
+    console.error('Wrong number of args', process.argv.length)
     process.exit(1)
   }
   const inputfilename: string = process.argv[2];
   const outputfilename: string = process.argv[3];
-  const inputData: string = fs.readFileSync(inputfilename, 'utf-8');
-  fs.writeFileSync(outputfilename, countRepeatedWords(inputData).toString());
+  run(realFileSystemModule, inputfilename, outputfilename)
 }
