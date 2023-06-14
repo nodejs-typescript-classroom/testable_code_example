@@ -1,0 +1,24 @@
+name: Node
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+jobs:
+  build_and_test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16.14.0'
+          cache: 'yarn'
+      - name: Install Dependency
+        run: yarn install --frozen-lock
+      - name: Test
+        run: yarn test
